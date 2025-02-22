@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #6200ea;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #6200ea;
+            color: white;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            color: white;
+            background-color: #6200ea;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4500b5;
+        }
+        .totals {
+            margin-top: 20px;
+            text-align: right;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Attendance Sheet</h1>
+    </header>
+    <div class="container">
+        <div class="form-group">
+            <label for="attendance-date">Select Date:</label>
+            <input type="date" id="attendance-date">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Admission Number</th>
+                    <th>Roll Number</th>
+                    <th>Student Name</th>
+                    <th>Present</th>
+                    <th>Absent</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceBody">
+                <!-- Rows dynamically added -->
+            </tbody>
+        </table>
+        <div class="totals">
+            <p>Total Present: <span id="totalPresent">0</span></p>
+            <p>Total Absent: <span id="totalAbsent">0</span></p>
+        </div>
+        <div class="btn-container">
+            <button onclick="saveAttendance()">Submit Attendance</button>
+        </div>
+    </div>
+    <script>
+        const students = [
+ { admissionNumber: 12356, rollNumber: 1, name: "Abhinaya M S" },
+            { admissionNumber: 12484, rollNumber: 2, name: "Abhinaya A" },
+            { admissionNumber: 12556, rollNumber: 3, name: "Abhinaya S" },
+            { admissionNumber: 12507, rollNumber: 4, name: "Arthi M" },
+            { admissionNumber: 12373, rollNumber: 5, name: "Athiya S" },
+            { admissionNumber: 12264, rollNumber: 6, name: "Barkath H" },
+            { admissionNumber: 12406, rollNumber: 7, name: "Charulatha R" },
+            { admissionNumber: 12599, rollNumber: 8, name: "Darthi A" },
+            { admissionNumber: 12182, rollNumber: 9, name: "Deshma N" },
+            { admissionNumber: 12624, rollNumber: 10, name: "Divyashree D" },
+            { admissionNumber: "12480", rollNumber: 11, name: "Harshini R" },
+            { admissionNumber: "12279", rollNumber: 12, name: "Hemalatha G" },
+            { admissionNumber: "12409", rollNumber: 13, name: "Iswarya S" },
+            { admissionNumber: "12414", rollNumber: 14, name: "Jayashree R" },
+            { admissionNumber: "12642", rollNumber: 15, name: "Jayasri J" },
+            { admissionNumber: "12383", rollNumber: 16, name: "Jayavashini E" },
+            { admissionNumber: "12636", rollNumber: 17, name: "Jothilakshmi K" },
+            { admissionNumber: "12623", rollNumber: 18, name: "Kavitha J" },
+            { admissionNumber: "12312", rollNumber: 19, name: "Keerthana K" },
+            { admissionNumber: "12327", rollNumber: 20, name: "Kruthika D" },
+            { admissionNumber: "12178", rollNumber: 21, name: "Lavanya G" },
+            { admissionNumber: "12374", rollNumber: 22, name: "Lavanya M" },
+            { admissionNumber: "12674", rollNumber: 23, name: "Leelavathi Uk" },
+            { admissionNumber: "12326", rollNumber: 24, name: "Logapriya B" },
+            { admissionNumber: "12540", rollNumber: 25, name: "Logasri M" },
+            { admissionNumber: "12413", rollNumber: 26, name: "Monika B" },
+            { admissionNumber: "12415", rollNumber: 27, name: "Muthulakshmi K" },
+            { admissionNumber: "12567", rollNumber: 28, name: "Narmatha R" },
+            { admissionNumber: "12358", rollNumber: 29, name: "Pavithra M" },
+            { admissionNumber: "12456", rollNumber: 30, name: "Privitha M" },
+            { admissionNumber: "12224", rollNumber: 31, name: "Rajeswari G" },
+            { admissionNumber: "12269", rollNumber: 32, name: "Ramya U" },
+            { admissionNumber: "12339", rollNumber: 33, name: "Ranjini L" },
+            { admissionNumber: "12149", rollNumber: 34, name: "Sailaxmi S" },
+            { admissionNumber: "12367", rollNumber: 35, name: "Samyuktha S" },
+            { admissionNumber: "12473", rollNumber: 36, name: "Sangeetha D" },
+            { admissionNumber: "12268", rollNumber: 37, name: "Shihana Fathima M" },
+            { admissionNumber: "12648", rollNumber: 38, name: "Soniya N" },
+            { admissionNumber: "12151", rollNumber: 39, name: "Sruthi R" },
+            { admissionNumber: "12319", rollNumber: 40, name: "Swetha B" },
+            { admissionNumber: "12263", rollNumber: 41, name: "Swetha M" },
+            { admissionNumber: "12244", rollNumber: 42, name: "Tejashree N" },
+            { admissionNumber: "12421", rollNumber: 43, name: "Tharani N" },
+            { admissionNumber: "12521", rollNumber: 44, name: "Vaishnavi R" },
+            { admissionNumber: "12404", rollNumber: 45, name: "Vanitha A" },
+            { admissionNumber: "12530", rollNumber: 46, name: "Vigneshwari P" },
+            { admissionNumber: "12254", rollNumber: 47, name: "Vimala L" },
+            { admissionNumber: "12592", rollNumber: 48, name: "Yasmeen A" },
+            { admissionNumber: "12647", rollNumber: 49, name: "Yoga Lakshmi D" },
+            { admissionNumber: "12239", rollNumber: 50, name: "Yoga Shree D" }
+        ];
+
+        // Populate the table
+        const attendanceBody = document.getElementById('attendanceBody');
+        students.forEach(student => {
+            const row = `
+                <tr>
+                    <td>${student.admissionNumber}</td>
+                    <td>${student.rollNumber}</td>
+                    <td>${student.name}</td>
+                    <td><input type="checkbox" class="present" onchange="updateTotals()"></td>
+                    <td><input type="checkbox" class="absent" onchange="updateTotals()"></td>
+                </tr>
+            `;
+            attendanceBody.innerHTML += row;
+        });
+
+        function updateTotals() {
+            const presentCheckboxes = document.querySelectorAll('.present');
+            const absentCheckboxes = document.querySelectorAll('.absent');
+
+            let totalPresent = 0;
+            let totalAbsent = 0;
+
+            presentCheckboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    totalPresent++;
+                    absentCheckboxes[index].checked = false; // Uncheck the corresponding absent checkbox
+                }
+            });
+
+            absentCheckboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    totalAbsent++;
+                    presentCheckboxes[index].checked = false; // Uncheck the corresponding present checkbox
+                }
+            });
+
+            document.getElementById('totalPresent').innerText = totalPresent;
+            document.getElementById('totalAbsent').innerText = totalAbsent;
+        }
+
+        function saveAttendance() {
+            const date = document.getElementById('attendance-date').value;
+            if (!date) {
+                alert('Please select a date before submitting.');
+                return;
+            }
+
+            const presentCheckboxes = document.querySelectorAll('.present');
+            const absentCheckboxes = document.querySelectorAll('.absent');
+
+            const attendanceData = [];
+            students.forEach((student, index) => {
+                attendanceData.push({
+                    date: date,
+                    admissionNumber: student.admissionNumber,
+                    rollNumber: student.rollNumber,
+                    name: student.name,
+                    present: presentCheckboxes[index].checked ? 1 : 0,
+                    absent: absentCheckboxes[index].checked ? 1 : 0,
+                });
+            });
+
+            // Store attendance data in localStorage
+            const existingData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+            localStorage.setItem('attendanceData', JSON.stringify([...existingData, ...attendanceData]));
+
+            alert('Attendance has been saved successfully!');
+        }
+    </script>
+</body>
+</html>

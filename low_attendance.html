@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low Attendance</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="low_attendance.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Students with Attendance Below 75%</h1>
+        <input type="text" id="searchName" placeholder="Search by Student Name" oninput="searchByName()">
+        <table>
+            <thead>
+                <tr>
+                    <th>Admission Number</th>
+                    <th>Roll Number</th>
+                    <th>Student Name</th>
+                    <th>Attendance Percentage</th>
+                </tr>
+            </thead>
+            <tbody id="lowAttendanceTableBody">
+                <!-- Rows will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

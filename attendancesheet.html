@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #6200ea;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #6200ea;
+            color: white;
+        }
+        .totals {
+            margin-top: 20px;
+            text-align: right;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Attendance Sheet</h1>
+    </header>
+    <div class="container">
+        <div class="form-group">
+            <label for="attendance-date">Select Date:</label>
+            <input type="date" id="attendance-date">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Admission Number</th>
+                    <th>Roll Number</th>
+                    <th>Student Name</th>
+                    <th>Present</th>
+                    <th>Absent</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceBody">
+                <!-- Rows can be dynamically added here -->
+                <tr>
+                    <td>12345</td>
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td><input type="checkbox" class="present" onchange="updateTotals()"></td>
+                    <td><input type="checkbox" class="absent" onchange="updateTotals()"></td>
+                </tr>
+                <tr>
+                    <td>12346</td>
+                    <td>2</td>
+                    <td>Jane Smith</td>
+                    <td><input type="checkbox" class="present" onchange="updateTotals()"></td>
+                    <td><input type="checkbox" class="absent" onchange="updateTotals()"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="totals">
+            <p>Total Present: <span id="totalPresent">0</span></p>
+            <p>Total Absent: <span id="totalAbsent">0</span></p>
+        </div>
+    </div>
+    <script>
+        function updateTotals() {
+            const presentCheckboxes = document.querySelectorAll('.present');
+            const absentCheckboxes = document.querySelectorAll('.absent');
+
+            let totalPresent = 0;
+            let totalAbsent = 0;
+
+            presentCheckboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    totalPresent++;
+                    absentCheckboxes[index].checked = false; // Uncheck the corresponding absent checkbox
+                }
+            });
+
+            absentCheckboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    totalAbsent++;
+                    presentCheckboxes[index].checked = false; // Uncheck the corresponding present checkbox
+                }
+            });
+
+            document.getElementById('totalPresent').innerText = totalPresent;
+            document.getElementById('totalAbsent').innerText = totalAbsent;
+        }
+    </script>
+</body>
+</html>

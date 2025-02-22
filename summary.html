@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Summary</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Attendance Summary</h1>
+    </header>
+
+    <div class="container">
+        <!-- Search by Name -->
+        <div class="search-group">
+            <input type="text" id="searchName" placeholder="Search by Student Name">
+            <button onclick="searchStudent()">Search</button>
+        </div>
+
+        <!-- Month Selection -->
+        <div class="form-group">
+            <label for="monthSelector">Select Month:</label>
+            <select id="monthSelector" onchange="filterByMonth()">
+                <option value="all">All Months</option>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="December">December</option>
+                <!-- Add all months here -->
+            </select>
+        </div>
+
+        <!-- Attendance Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Admission Number</th>
+                    <th>Roll Number</th>
+                    <th>Student Name</th>
+                    <th>Total Attendance</th>
+                    <th>Total Present Days</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+                <!-- Dynamically filled rows will go here -->
+            </tbody>
+        </table>
+
+        <!-- Back Button -->
+        <button onclick="location.href='attendance.html'">Go Back</button>
+    </div>
+
+    <script src="attendance.js"></script>
+</body>
+</html>

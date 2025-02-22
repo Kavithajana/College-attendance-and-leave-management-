@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Month Wise Leave Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Month Wise Leave Management</h1>
+    </header>
+
+    <div class="container">
+        <!-- Month Selection -->
+        <div class="form-group">
+            <label for="monthSelector">Select Month:</label>
+            <select id="monthSelector" onchange="filterByMonth()">
+                <option value="all">All Months</option>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+            </select>
+        </div>
+
+        <!-- Search by Name -->
+        <div class="form-group">
+            <label for="searchName">Search Student by Name:</label>
+            <input type="text" id="searchName" oninput="searchByName()" placeholder="Enter student name">
+        </div>
+
+        <!-- Attendance Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Admission Number</th>
+                    <th>Roll Number</th>
+                    <th>Student Name</th>
+                    <th>Total Attendance</th>
+                    <th>Total Present Days</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+                <!-- Data will be dynamically filled here -->
+            </tbody>
+        </table>
+
+        <!-- Go Back Button -->
+        <button onclick="location.href='attendance.html'">Go Back</button>
+    </div>
+
+    <script>
+        // Helper function to extract month name from a date string
+        function getMonthName(dateString) {
+            const date = new Date(dateString);
+            return isNaN(date) ? null : date.toLocaleString('default', { month: 'long' });
+        }
+
+        // Function to filter attendance data by selected month
+        function filterByMonth() {
+            const selectedMonth = document.getElementById('monthSelector').value;
+            const attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+            const filteredData = selectedMonth === 'all'
+                ? attendanceData
+                : attendanceData.filter(record => getMonthName(record.date) === selectedMonth);
+
+            displayAttendanceData(filteredData);
+        }
+
+        // Function to filter attendance data by student name
+        function searchByName() {
+            const searchValue = document.getElementById('searchName').value.toLowerCase();
+            const selectedMonth = document.getElementById('monthSelector').value;
+            const attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+            const filteredData = selectedMonth === 'all'
+                ? attendanceData
+                : attendanceData.filter(record => getMonthName(record.date) === selectedMonth);
+
+            const searchedData = filteredData.filter(record =>
+                record.name.toLowerCase().includes(searchValue)
+            );
+
+            displayAttendanceData(searchedData);
+        }
+
+        // Function to display aggregated attendance data in the table
+        function displayAttendanceData(data) {
+            const studentMap = new Map();
+
+            // Aggregate attendance data
+            data.forEach(record => {
+                if (!studentMap.has(record.admissionNumber)) {
+                    studentMap.set(record.admissionNumber, {
+                        admissionNumber: record.admissionNumber,
+                        rollNumber: record.rollNumber,
+                        name: record.name,
+                        totalDays: 0,
+                        totalPresent: 0,
+                    });
+                }
+                const student = studentMap.get(record.admissionNumber);
+                student.totalDays += 1;
+                student.totalPresent += record.present ? record.present : 0;
+            });
+
+            // Populate table with aggregated data
+            const attendanceTableBody = document.getElementById('attendanceTableBody');
+            attendanceTableBody.innerHTML = '';
+
+            studentMap.forEach(student => {
+                const row = `
+                    <tr>
+                        <td>${student.admissionNumber}</td>
+                        <td>${student.rollNumber}</td>
+                        <td>${student.name}</td>
+                        <td>${student.totalDays}</td>
+                        <td>${student.totalPresent}</td>
+                    </tr>
+                `;
+                attendanceTableBody.innerHTML += row;
+            });
+        }
+
+        // Initialize the table with all data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+            displayAttendanceData(attendanceData);
+        });
+    </script>
+</body>
+</html>
